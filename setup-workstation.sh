@@ -18,7 +18,7 @@ INSTALL_STARSHIP=true
 INSTALL_NEOVIM=true
 INSTALL_TMUX=true
 INSTALL_CLI_TOOLS=true
-INSTALL_PYTHON=true
+INSTALL_UV=true
 INSTALL_NODE=true
 INSTALL_AWS=true
 INSTALL_DB=true
@@ -214,31 +214,34 @@ if [ "$INSTALL_CLI_TOOLS" = true ]; then
 fi
 
 # ──────────────────────────────────────────────────────────────────────────────
-# PYTHON (pyenv + tools)
+# PYTHON (uv — handles versions, venvs, and tool installs)
 # ──────────────────────────────────────────────────────────────────────────────
-if [ "$INSTALL_PYTHON" = true ]; then
-    info "Setting up Python toolchain..."
-    brew_install pyenv
-    brew_install pyenv-virtualenv
-    brew_install pipx
+if [ "$INSTALL_UV" = true ]; then
+    info "Setting up Python toolchain (uv)..."
 
-    # Ensure pipx path
-    pipx ensurepath &>/dev/null || true
+    # Install uv
+    if ! command -v uv &>/dev/null; then
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        export PATH="$HOME/.local/bin:$PATH"
+    else
+        ok "uv already installed"
+    fi
 
-    # Global Python tools via pipx
+    # Install Python
+    uv python install 3.12
+
+    # Global CLI tools via uv tool
     for tool in ruff black ipython; do
-        if ! pipx list 2>/dev/null | grep -q "package $tool"; then
-            pipx install "$tool"
+        if ! uv tool list 2>/dev/null | grep -q "$tool"; then
+            uv tool install "$tool"
         else
-            ok "$tool (pipx) already installed"
+            ok "$tool (uv tool) already installed"
         fi
     done
 
     warn "Add to .zshrc:"
-    echo '  export PYENV_ROOT="$HOME/.pyenv"'
-    echo '  export PATH="$PYENV_ROOT/bin:$PATH"'
-    echo '  eval "$(pyenv init -)"'
-    echo '  eval "$(pyenv virtualenv-init -)"'
+    echo '  export PATH="$HOME/.local/bin:$PATH"'
+    echo '  eval "$(uv generate-shell-completion zsh)"'
 fi
 
 # ──────────────────────────────────────────────────────────────────────────────

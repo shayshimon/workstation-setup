@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workstation Setup Reference</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+    background: #1e1e2e;
+    color: #cdd6f4;
+    padding: 16px;
+    line-height: 1.5;
+    font-size: 14px;
+}
+h1 {
+    font-size: 20px;
+    color: #89b4fa;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #313244;
+}
+h2 {
+    font-size: 16px;
+    color: #a6e3a1;
+    margin-top: 24px;
+    margin-bottom: 8px;
+}
+h3 {
+    font-size: 14px;
+    color: #f9e2af;
+    margin-top: 16px;
+    margin-bottom: 4px;
+}
+.desc {
+    color: #a6adc8;
+    margin-bottom: 8px;
+}
+pre {
+    background: #11111b;
+    border-radius: 8px;
+    padding: 12px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #313244;
+}
+code {
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    background: #11111b;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+.section {
+    margin-bottom: 8px;
+    border: 1px solid #313244;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.section-header {
+    background: #181825;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+}
+.section-header h3 {
+    margin: 0;
+    color: #cdd6f4;
+    font-size: 14px;
+}
+.section-header .badge {
+    background: #313244;
+    color: #89b4fa;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+}
+.section-body {
+    padding: 12px 16px;
+    display: none;
+    border-top: 1px solid #313244;
+}
+.section.open .section-body { display: block; }
+.section.open .section-header { background: #1e1e2e; }
+.category {
+    margin-bottom: 20px;
+}
+.key {
+    display: inline-block;
+    background: #313244;
+    color: #f5e0dc;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    margin-right: 4px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8px;
+}
+td {
+    padding: 4px 0;
+    vertical-align: top;
+}
+td:first-child {
+    width: 40%;
+    padding-right: 8px;
+}
+.tag {
+    display: inline-block;
+    background: #45475a;
+    color: #cdd6f4;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-right: 4px;
+}
+</style>
+</head>
+<body>
+
+<h1>🛠️ Workstation Reference</h1>
+
+<div class="category">
+<h2>Shell & Prompt</h2>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>⭐ Starship</h3><span class="badge">prompt</span>
+</div>
+<div class="section-body">
+<p class="desc">Minimal prompt — shows git, python venv, node, aws profile only when relevant. Zero-config out of the box.</p>
+<p>Config: <code>~/.config/starship.toml</code></p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>📂 direnv</h3><span class="badge">env vars</span>
+</div>
+<div class="section-body">
+<p class="desc">Auto-loads/unloads environment variables when you enter/leave a directory.</p>
+<pre>echo 'export AWS_PROFILE=prod' > .envrc
+direnv allow
+# now cd in/out auto-sets vars</pre>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🚀 zoxide</h3><span class="badge">smart cd</span>
+</div>
+<div class="section-body">
+<p class="desc">Remembers directories you visit. Fuzzy-jump anywhere.</p>
+<pre>z projects       # jump to best match
+z atomic ppc     # multi-term fuzzy
+zi               # interactive picker</pre>
+</div>
+</div>
+</div>
+
+<div class="category">
+<h2>Search & Navigation</h2>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🔍 fzf</h3><span class="badge">fuzzy finder</span>
+</div>
+<div class="section-body">
+<p class="desc">Fuzzy search everything — history, files, directories.</p>
+<pre>Ctrl+R    fuzzy command history
+Ctrl+T    fuzzy find files
+Alt+C     fuzzy cd into subdirs
+vim $(fzf)  open searched file</pre>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>⚡ ripgrep (rg)</h3><span class="badge">search text</span>
+</div>
+<div class="section-body">
+<p class="desc">Blazingly fast recursive text search. Respects .gitignore.</p>
+<pre>rg "def train"           # recursive search
+rg "TODO" --type py      # only Python files
+rg "error" -i -l         # case-insensitive, filenames only
+rg "pattern" -C 3        # 3 lines context</pre>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>📁 fd</h3><span class="badge">find files</span>
+</div>
+<div class="section-body">
+<p class="desc">Fast, user-friendly alternative to <code>find</code>.</p>
+<pre>fd "*.py"                # find Python files
+fd migration --type d    # find directories
+fd --extension json      # by extension
+fd -H ".env"             # include hidden</pre>
+</div>
+</div>
+</div>
+
+<div class="category">
+<h2>File Viewing</h2>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🦇 bat</h3><span class="badge">cat + syntax</span>
+</div>
+<div class="section-body">
+<p class="desc"><code>cat</code> with syntax highlighting, line numbers, git changes.</p>
+<pre>bat file.py            # view with colors
+bat -l json data.txt   # force language
+bat --diff file.py     # show git changes
+bat -p file.py         # plain output</pre>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>📋 eza</h3><span class="badge">modern ls</span>
+</div>
+<div class="section-body">
+<p class="desc"><code>ls</code> replacement with colors, icons, git status.</p>
+<pre>eza                  # simple ls
+eza -la              # long + hidden
+eza --tree --level=2 # tree view
+eza -l --git         # git status column</pre>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🔧 jq</h3><span class="badge">JSON</span>
+</div>
+<div class="section-body">
+<p class="desc">Command-line JSON processor — filter, transform, pretty-print.</p>
+<pre>cat data.json | jq '.'             # pretty-print
+cat data.json | jq '.items[0].name' # extract
+curl -s api/url | jq '.[] | .id'   # pipe API
+jq -r '.key' file.json             # raw (no quotes)</pre>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>📖 tldr</h3><span class="badge">man pages</span>
+</div>
+<div class="section-body">
+<p class="desc">Community-driven simplified man pages with practical examples.</p>
+<pre>tldr tar          # common tar recipes
+tldr git rebase   # concise examples</pre>
+</div>
+</div>
+</div>
+
+<div class="category">
+<h2>Git</h2>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🐙 gh</h3><span class="badge">GitHub CLI</span>
+</div>
+<div class="section-body">
+<p class="desc">Full GitHub from terminal — PRs, issues, CI, repos.</p>
+<pre>gh pr create          # create PR
+gh pr list            # open PRs
+gh pr checkout 42     # checkout PR locally
+gh issue list         # issues
+gh repo view --web    # open in browser
+gh run list           # CI status</pre>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🌳 lazygit</h3><span class="badge">terminal UI</span>
+</div>
+<div class="section-body">
+<p class="desc">Full git GUI in the terminal. Just run <code>lazygit</code>.</p>
+<pre>Space     stage/unstage
+c         commit
+p         push
+P         pull
+?         help
+q         quit</pre>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🎨 git-delta</h3><span class="badge">better diffs</span>
+</div>
+<div class="section-body">
+<p class="desc">Syntax-highlighted, side-by-side diffs. Auto-applies to all git commands.</p>
+<p>Add to <code>~/.gitconfig</code>:</p>
+<pre>[core]
+    pager = delta
+[delta]
+    navigate = true
+    side-by-side = true</pre>
+</div>
+</div>
+</div>
+
+<div class="category">
+<h2>HTTP</h2>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🌐 httpie</h3><span class="badge">API client</span>
+</div>
+<div class="section-body">
+<p class="desc">Human-friendly HTTP client. Cleaner than curl for APIs.</p>
+<pre>http GET api.com/users             # GET
+http POST api.com/users name=Shay  # POST JSON
+http -a user:pass GET api.com/data # auth
+http --headers GET example.com     # headers only</pre>
+</div>
+</div>
+</div>
+
+<div class="category">
+<h2>Python</h2>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🐍 pyenv</h3><span class="badge">versions</span>
+</div>
+<div class="section-body">
+<p class="desc">Install and switch between Python versions.</p>
+<pre>pyenv install 3.12.3     # install
+pyenv global 3.12.3      # set default
+pyenv local 3.11.9       # per-project
+pyenv versions           # list installed</pre>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🧪 pyenv-virtualenv</h3><span class="badge">venvs</span>
+</div>
+<div class="section-body">
+<p class="desc">Virtual environments integrated with pyenv.</p>
+<pre>pyenv virtualenv 3.12.3 myproj  # create
+pyenv activate myproj           # activate
+pyenv deactivate                # deactivate
+pyenv local myproj              # auto-activate in dir</pre>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>📦 pipx</h3><span class="badge">CLI tools</span>
+</div>
+<div class="section-body">
+<p class="desc">Install Python CLI tools in isolated environments. No conflicts.</p>
+<pre>pipx install ruff        # install
+pipx install black
+pipx list                # see installed
+pipx upgrade-all         # update all</pre>
+</div>
+</div>
+</div>
+
+<div class="category">
+<h2>Node & AWS</h2>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>📗 nvm</h3><span class="badge">Node versions</span>
+</div>
+<div class="section-body">
+<pre>nvm install --lts       # latest LTS
+nvm use 20              # switch
+nvm alias default 20    # set default</pre>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🔐 aws-vault</h3><span class="badge">credentials</span>
+</div>
+<div class="section-body">
+<p class="desc">Securely store AWS creds. Handles MFA/assume-role.</p>
+<pre>aws-vault add prod                    # store creds
+aws-vault exec prod -- aws s3 ls      # run with creds
+aws-vault login prod                  # open console</pre>
+</div>
+</div>
+</div>
+
+<div class="category">
+<h2>Database</h2>
+
+<div class="section">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🗄️ mycli</h3><span class="badge">MariaDB/MySQL</span>
+</div>
+<div class="section-body">
+<p class="desc">MySQL client with autocomplete, syntax highlighting, pager.</p>
+<pre>mycli -h host -u user -p -D dbname
+# Tab      autocomplete tables/columns
+# Ctrl+D   exit
+# \G       vertical output</pre>
+</div>
+</div>
+</div>
+
+<div class="category">
+<h2>Tmux Keybindings</h2>
+
+<div class="section open">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>⌨️ Tmux</h3><span class="badge">prefix = Ctrl+a</span>
+</div>
+<div class="section-body">
+<table>
+<tr><td><span class="key">Ctrl+a</span> <span class="key">|</span></td><td>Split vertical</td></tr>
+<tr><td><span class="key">Ctrl+a</span> <span class="key">-</span></td><td>Split horizontal</td></tr>
+<tr><td><span class="key">Ctrl+a</span> <span class="key">h/j/k/l</span></td><td>Navigate panes</td></tr>
+<tr><td><span class="key">Ctrl+a</span> <span class="key">H/J/K/L</span></td><td>Resize panes</td></tr>
+<tr><td><span class="key">Ctrl+a</span> <span class="key">c</span></td><td>New window</td></tr>
+<tr><td><span class="key">Ctrl+a</span> <span class="key">n/p</span></td><td>Next/prev window</td></tr>
+<tr><td><span class="key">Ctrl+a</span> <span class="key">r</span></td><td>Reload config</td></tr>
+<tr><td><span class="key">Ctrl+a</span> <span class="key">I</span></td><td>Install TPM plugins</td></tr>
+<tr><td><span class="key">Double-click</span></td><td>Zoom/unzoom pane</td></tr>
+<tr><td><span class="key">Mouse drag</span></td><td>Resize borders</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<div class="category">
+<h2>Neovim Keybindings</h2>
+
+<div class="section open">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>⌨️ Neovim</h3><span class="badge">leader = Space</span>
+</div>
+<div class="section-body">
+<table>
+<tr><td><span class="key">Space</span><span class="key">ff</span></td><td>Find files</td></tr>
+<tr><td><span class="key">Space</span><span class="key">fg</span></td><td>Live grep</td></tr>
+<tr><td><span class="key">Space</span><span class="key">fb</span></td><td>Buffers</td></tr>
+<tr><td><span class="key">Space</span><span class="key">fr</span></td><td>Recent files</td></tr>
+<tr><td><span class="key">Space</span><span class="key">e</span></td><td>File explorer</td></tr>
+<tr><td><span class="key">Space</span><span class="key">/</span></td><td>Search in buffer</td></tr>
+<tr><td><span class="key">gd</span></td><td>Go to definition</td></tr>
+<tr><td><span class="key">gr</span></td><td>References</td></tr>
+<tr><td><span class="key">K</span></td><td>Hover docs</td></tr>
+<tr><td><span class="key">Space</span><span class="key">ca</span></td><td>Code action</td></tr>
+<tr><td><span class="key">Space</span><span class="key">rn</span></td><td>Rename symbol</td></tr>
+<tr><td><span class="key">Space</span><span class="key">cf</span></td><td>Format file</td></tr>
+<tr><td><span class="key">]h</span> / <span class="key">[h</span></td><td>Next/prev git hunk</td></tr>
+<tr><td><span class="key">Space</span><span class="key">hp</span></td><td>Preview hunk</td></tr>
+<tr><td><span class="key">Shift+H/L</span></td><td>Prev/next buffer</td></tr>
+<tr><td><span class="key">Space</span><span class="key">w</span></td><td>Save</td></tr>
+<tr><td><span class="key">Space</span><span class="key">q</span></td><td>Quit</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<div class="category">
+<h2>work() Command</h2>
+<div class="section open">
+<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>🚀 work</h3><span class="badge">dev layout</span>
+</div>
+<div class="section-body">
+<p class="desc">Creates a 4-pane tmux layout for any repo.</p>
+<pre>cd ~/projects/my-repo
+work</pre>
+<pre style="font-size:11px; line-height:1.3">
+┌──────────┬─────────────────┐
+│  codex   │                 │
+├──────────┤      nvim       │
+│  claude  │                 │
+├──────────┤                 │
+│ terminal │                 │
+└──────────┴─────────────────┘</pre>
+<p class="desc" style="margin-top:8px">Re-running <code>work</code> in same dir just switches to existing window.</p>
+</div>
+</div>
+</div>
+
+<p style="margin-top: 24px; color: #6c7086; text-align: center; font-size: 12px;">Catppuccin Mocha 🎨 • Updated June 2026</p>
+
+</body>
+</html>
