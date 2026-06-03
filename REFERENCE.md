@@ -204,21 +204,24 @@ aws-vault exec production -- aws s3 ls  # run command with creds
 aws-vault login production            # open console in browser
 ```
 
-### `asp` — switch profiles (aws-vault wrapper)
-Replaces the oh-my-zsh `asp` plugin. Instead of exporting `AWS_PROFILE` with
-plaintext keys, it opens a subshell with temporary STS credentials from
-aws-vault (keys live in the macOS Keychain). Defined in `dotfiles/aws.zsh`.
+### `asp` — switch profiles
+A plain `AWS_PROFILE` switcher (like the oh-my-zsh `asp` plugin). It exports the
+profile and its region into your **current** shell, so every command and deploy
+script you launch afterwards inherits the credentials — no subshell, no expiry.
+Keys live in `~/.aws/credentials`; the region is read from `~/.aws/config`.
+Defined in `dotfiles/aws.zsh`.
 
 ```bash
-aws-vault add my-profile          # one-time: store keys in the Keychain
-asp my-profile                    # subshell with temp creds (exit/Ctrl-D to drop)
-asp                               # no arg: pick a profile via fzf
-aspx my-profile aws s3 ls         # run one command under a profile, no subshell
+asp my-profile                    # export AWS_PROFILE + region into this shell
+asp                               # no arg: clear AWS_PROFILE and region
 asp-list                          # list configured profiles
 ```
 
-The Starship prompt reads `$AWS_VAULT`, so it shows the active profile while
-you are inside an `asp` subshell. Tab-completion works on `asp`/`aspx`.
+Switching is in-place: `asp prod` then `asp stage` just re-exports — no need to
+exit anything. Each call also scrubs any stale aws-vault session vars
+(`AWS_VAULT`, `AWS_SESSION_TOKEN`, hard-coded keys) so `AWS_PROFILE` stays
+authoritative. The Starship prompt reads `$AWS_PROFILE` / `$AWS_REGION`, so it
+shows the active profile and region. Tab-completion works on `asp`.
 
 ### ssm-session-manager-plugin
 SSH into EC2 instances via AWS SSM (no open ports needed).

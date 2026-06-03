@@ -95,13 +95,15 @@ adds it to `~/.zshrc`.
 
 ## AWS Profiles
 
-`dotfiles/aws.zsh` provides an `asp`-style profile switcher backed by aws-vault
-(temporary credentials from the macOS Keychain, not plaintext keys):
+`dotfiles/aws.zsh` provides a simple `asp` profile switcher. It exports
+`AWS_PROFILE` (and the profile's region from `~/.aws/config`) into your current
+shell, so every command and deploy script you launch afterwards inherits the
+credentials. Keys live in `~/.aws/credentials`.
 
 ```bash
-aws-vault add my-profile     # one-time setup
-asp my-profile               # subshell with temp creds; exit/Ctrl-D to drop
-aspx my-profile aws s3 ls    # run a single command under a profile
+asp my-profile     # switch: export AWS_PROFILE + region into this shell
+asp                # no arg: clear AWS_PROFILE and region
+asp-list           # list configured profiles
 ```
 
 See [REFERENCE.md](REFERENCE.md#aws) for details.
@@ -111,7 +113,7 @@ See [REFERENCE.md](REFERENCE.md#aws) for details.
 1. Restart the terminal or run `source ~/.zshrc`.
 2. In tmux, press `Ctrl+a`, then `I` to install TPM plugins.
 3. Open Neovim; lazy.nvim installs plugins on first launch.
-4. Configure AWS credentials if needed: `aws-vault add <profile-name>`.
+4. Configure AWS credentials if needed in `~/.aws/credentials` and `~/.aws/config`.
 
 ## License
 
