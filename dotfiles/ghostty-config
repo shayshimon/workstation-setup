@@ -2,12 +2,12 @@
 # ~/.config/ghostty/config
 
 # Font
-font-family = JetBrains Mono
+font-family = JetBrainsMono Nerd Font Mono
 font-size = 14
 font-thicken = true
 
-# Theme — Catppuccin Mocha
-theme = catppuccin-mocha
+# Theme - Catppuccin Mocha
+theme = Catppuccin Mocha
 
 # Window
 window-padding-x = 12

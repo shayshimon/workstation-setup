@@ -98,7 +98,7 @@ curl -s api/url | jq '.[] | .id'    # process API response
 jq -r '.key' file.json              # raw output (no quotes)
 ```
 
-### tldr
+### tldr via tlrc
 Simplified, example-driven man pages.
 
 ```bash
@@ -137,9 +137,10 @@ q            quit
 ### git-delta
 Better git diffs — syntax highlighting, side-by-side, line numbers.
 
-Already configured via `.gitconfig`. Just use `git diff`, `git log -p`, etc. as normal — delta renders them.
+The setup script configures delta when `CONFIGURE_GIT=true`. After that, use
+`git diff`, `git log -p`, etc. as normal and delta renders them.
 
-To enable, add to `~/.gitconfig`:
+Equivalent `~/.gitconfig` settings:
 ```ini
 [core]
     pager = delta
@@ -169,34 +170,16 @@ http -d GET example.com/file.zip     # download
 
 ## Dev Toolchain
 
-### pyenv
-Manage multiple Python versions.
+### uv
+Manage Python versions, virtual environments, and Python CLI tools.
 
 ```bash
-pyenv install 3.12.3        # install a version
-pyenv global 3.12.3         # set default
-pyenv local 3.11.9          # set per-project (.python-version)
-pyenv versions              # list installed
-```
-
-### pyenv-virtualenv
-Virtual environments tied to pyenv.
-
-```bash
-pyenv virtualenv 3.12.3 myproject    # create venv
-pyenv activate myproject             # activate
-pyenv deactivate                     # deactivate
-pyenv local myproject                # auto-activate in this dir
-```
-
-### pipx
-Install Python CLI tools in isolated environments.
-
-```bash
-pipx install ruff           # install globally without conflicts
-pipx install black
-pipx list                   # see what's installed
-pipx upgrade-all            # update everything
+uv python install 3.12      # install Python 3.12
+uv venv                     # create .venv in the current project
+source .venv/bin/activate   # activate the project venv
+uv pip install requests     # install a package into the active venv
+uv tool list                # list globally installed Python tools
+uv tool upgrade --all       # update uv-managed CLI tools
 ```
 
 ### nvm
@@ -212,7 +195,7 @@ nvm alias default 20        # set default
 
 ## AWS
 
-### aws-vault
+### aws-vault via aws-vault-binary
 Securely store and access AWS credentials with MFA.
 
 ```bash
@@ -220,6 +203,22 @@ aws-vault add production              # store creds
 aws-vault exec production -- aws s3 ls  # run command with creds
 aws-vault login production            # open console in browser
 ```
+
+### `asp` — switch profiles (aws-vault wrapper)
+Replaces the oh-my-zsh `asp` plugin. Instead of exporting `AWS_PROFILE` with
+plaintext keys, it opens a subshell with temporary STS credentials from
+aws-vault (keys live in the macOS Keychain). Defined in `dotfiles/aws.zsh`.
+
+```bash
+aws-vault add my-profile          # one-time: store keys in the Keychain
+asp my-profile                    # subshell with temp creds (exit/Ctrl-D to drop)
+asp                               # no arg: pick a profile via fzf
+aspx my-profile aws s3 ls         # run one command under a profile, no subshell
+asp-list                          # list configured profiles
+```
+
+The Starship prompt reads `$AWS_VAULT`, so it shows the active profile while
+you are inside an `asp` subshell. Tab-completion works on `asp`/`aspx`.
 
 ### ssm-session-manager-plugin
 SSH into EC2 instances via AWS SSM (no open ports needed).

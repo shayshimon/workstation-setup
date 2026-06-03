@@ -83,7 +83,8 @@ map("x", "<leader>p", [["_dP]], { desc = "Paste without yank" })
 -- LAZY.NVIM BOOTSTRAP
 -- ════════════════════════════════════════════════════════════════════
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+local uv = vim.uv or vim.loop
+if not uv.fs_stat(lazypath) then
     vim.fn.system({
         "git", "clone", "--filter=blob:none",
         "https://github.com/folke/lazy.nvim.git",
@@ -176,6 +177,10 @@ require("lazy").setup({
     -- ── Treesitter (syntax highlighting) ───────────────────────────
     {
         "nvim-treesitter/nvim-treesitter",
+        -- Pin the classic API branch. The default branch is now the `main`
+        -- rewrite, which removes nvim-treesitter.configs and the options used
+        -- below (ensure_installed/indent/incremental_selection).
+        branch = "master",
         build = ":TSUpdate",
         config = function()
             require("nvim-treesitter.configs").setup({
@@ -206,12 +211,13 @@ require("lazy").setup({
             "hrsh7th/cmp-nvim-lsp",
         },
         config = function()
-            local lspconfig = require("lspconfig")
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+            -- Merge cmp capabilities into every server's config (nvim 0.11+ API).
+            vim.lsp.config("*", { capabilities = capabilities })
+
             -- Python (Pyright)
-            lspconfig.pyright.setup({
-                capabilities = capabilities,
+            vim.lsp.config("pyright", {
                 settings = {
                     python = {
                         analysis = {
@@ -223,8 +229,7 @@ require("lazy").setup({
             })
 
             -- Lua
-            lspconfig.lua_ls.setup({
-                capabilities = capabilities,
+            vim.lsp.config("lua_ls", {
                 settings = {
                     Lua = {
                         runtime = { version = "LuaJIT" },
@@ -234,6 +239,10 @@ require("lazy").setup({
                     },
                 },
             })
+
+            -- Server definitions still ship from nvim-lspconfig's lsp/ dir;
+            -- enable() activates them with the overrides configured above.
+            vim.lsp.enable({ "pyright", "lua_ls" })
 
             -- LSP Keymaps (on attach)
             vim.api.nvim_create_autocmd("LspAttach", {
@@ -247,8 +256,12 @@ require("lazy").setup({
                     map("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
                     map("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename" }))
                     map("n", "<leader>D", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Type definition" }))
-                    map("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Prev diagnostic" }))
-                    map("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
+                    map("n", "[d", function()
+                        vim.diagnostic.jump({ count = -1 })
+                    end, vim.tbl_extend("force", opts, { desc = "Prev diagnostic" }))
+                    map("n", "]d", function()
+                        vim.diagnostic.jump({ count = 1 })
+                    end, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
                 end,
             })
 
@@ -338,11 +351,11 @@ require("lazy").setup({
                 },
                 format_on_save = {
                     timeout_ms = 3000,
-                    lsp_fallback = true,
+                    lsp_format = "fallback",
                 },
             })
             map("n", "<leader>cf", function()
-                require("conform").format({ async = true, lsp_fallback = true })
+                require("conform").format({ async = true, lsp_format = "fallback" })
             end, { desc = "Format file" })
         end,
     },
@@ -378,13 +391,13 @@ require("lazy").setup({
         event = "VeryLazy",
         config = function()
             local wk = require("which-key")
-            wk.setup({ window = { border = "rounded" } })
-            wk.register({
-                ["<leader>f"] = { name = "+find" },
-                ["<leader>b"] = { name = "+buffer" },
-                ["<leader>c"] = { name = "+code" },
-                ["<leader>h"] = { name = "+git hunks" },
-                ["<leader>r"] = { name = "+rename" },
+            wk.setup({ win = { border = "rounded" } })
+            wk.add({
+                { "<leader>f", group = "find" },
+                { "<leader>b", group = "buffer" },
+                { "<leader>c", group = "code" },
+                { "<leader>h", group = "git hunks" },
+                { "<leader>r", group = "rename" },
             })
         end,
     },

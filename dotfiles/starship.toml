@@ -1,7 +1,7 @@
 # Starship Prompt Configuration
 # ~/.config/starship.toml
 
-# Minimal, informative prompt
+# Minimal, informative prompt — single line: status then prompt
 format = """
 $directory\
 $git_branch\
@@ -10,7 +10,6 @@ $python\
 $nodejs\
 $aws\
 $cmd_duration\
-$line_break\
 $character"""
 
 # Don't add blank line between prompts

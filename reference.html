@@ -302,10 +302,12 @@ q         quit</pre>
 <h3>🎨 git-delta</h3><span class="badge">better diffs</span>
 </div>
 <div class="section-body">
-<p class="desc">Syntax-highlighted, side-by-side diffs. Auto-applies to all git commands.</p>
-<p>Add to <code>~/.gitconfig</code>:</p>
+<p class="desc">Syntax-highlighted, side-by-side diffs. The setup script configures this when <code>CONFIGURE_GIT=true</code>.</p>
+<p>Equivalent <code>~/.gitconfig</code> settings:</p>
 <pre>[core]
     pager = delta
+[interactive]
+    diffFilter = delta --color-only
 [delta]
     navigate = true
     side-by-side = true</pre>
@@ -335,40 +337,16 @@ http --headers GET example.com     # headers only</pre>
 
 <div class="section">
 <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
-<h3>🐍 pyenv</h3><span class="badge">versions</span>
+<h3>🐍 uv</h3><span class="badge">Python toolkit</span>
 </div>
 <div class="section-body">
-<p class="desc">Install and switch between Python versions.</p>
-<pre>pyenv install 3.12.3     # install
-pyenv global 3.12.3      # set default
-pyenv local 3.11.9       # per-project
-pyenv versions           # list installed</pre>
-</div>
-</div>
-
-<div class="section">
-<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
-<h3>🧪 pyenv-virtualenv</h3><span class="badge">venvs</span>
-</div>
-<div class="section-body">
-<p class="desc">Virtual environments integrated with pyenv.</p>
-<pre>pyenv virtualenv 3.12.3 myproj  # create
-pyenv activate myproj           # activate
-pyenv deactivate                # deactivate
-pyenv local myproj              # auto-activate in dir</pre>
-</div>
-</div>
-
-<div class="section">
-<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
-<h3>📦 pipx</h3><span class="badge">CLI tools</span>
-</div>
-<div class="section-body">
-<p class="desc">Install Python CLI tools in isolated environments. No conflicts.</p>
-<pre>pipx install ruff        # install
-pipx install black
-pipx list                # see installed
-pipx upgrade-all         # update all</pre>
+<p class="desc">Manage Python versions, virtual environments, and Python CLI tools.</p>
+<pre>uv python install 3.12      # install Python
+uv venv                     # create .venv
+source .venv/bin/activate   # activate
+uv pip install requests     # install into venv
+uv tool list                # see installed tools
+uv tool upgrade --all       # update tools</pre>
 </div>
 </div>
 </div>
